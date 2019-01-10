@@ -15,9 +15,22 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
 
+class MyEditorPane extends JEditorPane {
+    boolean lock1 = false;
+    boolean lock2 = false;
+
+    @Override
+    public void setText(String text) {
+        lock1 = true;
+        lock2 = true;
+        super.setText(text);
+
+    }
+}
+
 public class GUI {
     //    static String text = "";
-    static JEditorPane editorPane = new JEditorPane();
+    static MyEditorPane editorPane = new MyEditorPane();
     static JScrollPane scrollPane = new JScrollPane(editorPane);
     static JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     static int status = 0;
@@ -94,17 +107,20 @@ public class GUI {
                     System.out.println(insert.retain);
                     System.out.println(insert.insert);
                     if (status == 2) { //It is client
-
-                        try {
-                            ClientBuffer.buffer.put(insert);
-                        } catch (InterruptedException error) {
-                            error.printStackTrace();
+                        if (editorPane.lock1) {
+                            editorPane.lock1 = false;
+                        } else {
+                            try {
+                                ClientBuffer.buffer.put(insert);
+                            } catch (InterruptedException error) {
+                                error.printStackTrace();
+                            }
                         }
                     }
-                    if(status == 1){
-                        try{
+                    if (status == 1) {
+                        try {
                             TextBuffer.buffer.put(new Text(editorPane.getText()));
-                        }catch (InterruptedException error) {
+                        } catch (InterruptedException error) {
                             error.printStackTrace();
                         }
                     }
@@ -119,16 +135,20 @@ public class GUI {
                 Delete delete = new Delete(e.getOffset() + e.getLength(), e.getLength());
                 System.out.println(delete.retain);
                 if (status == 2) { //It is client
-                    try {
-                        ClientBuffer.buffer.put(delete);
-                    } catch (InterruptedException error) {
-                        error.printStackTrace();
+                    if (editorPane.lock2) {
+                        editorPane.lock2 = false;
+                    } else {
+                        try {
+                            ClientBuffer.buffer.put(delete);
+                        } catch (InterruptedException error) {
+                            error.printStackTrace();
+                        }
                     }
                 }
-                if(status == 1){
-                    try{
+                if (status == 1) {
+                    try {
                         TextBuffer.buffer.put(new Text(editorPane.getText()));
-                    }catch (InterruptedException error) {
+                    } catch (InterruptedException error) {
                         error.printStackTrace();
                     }
                 }
