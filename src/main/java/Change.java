@@ -12,10 +12,10 @@ class Insert extends Change{
 
 
 class Delete extends Change{
-//    String delete;
-    Delete(int retain){
+    int length;
+    Delete(int retain, int length){
         this.retain = retain;
-//        this.delete = delete;
+        this.length = length;
     }
 }
 

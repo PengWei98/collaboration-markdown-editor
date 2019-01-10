@@ -88,22 +88,26 @@ public class GUI {
 
         editorPane.getDocument().addDocumentListener(new DocumentListener() { //Producer
             public void insertUpdate(DocumentEvent e) {
-                System.out.println("insert");
+//                System.out.println("insert");
                 try {
                     Insert insert = new Insert(e.getOffset(), e.getDocument().getText(e.getOffset(), e.getLength()));
                     System.out.println(insert.retain);
                     System.out.println(insert.insert);
                     if (status == 2) { //It is client
+
                         try {
                             ClientBuffer.buffer.put(insert);
                         } catch (InterruptedException error) {
                             error.printStackTrace();
                         }
                     }
-//                    if(status == 1){
-//                        update = true;
-//                        System.out.println("You can update");
-//                    }
+                    if(status == 1){
+                        try{
+                            TextBuffer.buffer.put(new Text(editorPane.getText()));
+                        }catch (InterruptedException error) {
+                            error.printStackTrace();
+                        }
+                    }
                 } catch (BadLocationException error) {
                     error.printStackTrace();
                 }
@@ -111,12 +115,20 @@ public class GUI {
 
             public void removeUpdate(DocumentEvent e) {
                 System.out.println("remove");
-                Delete delete = new Delete(e.getOffset() + 1);
+//                System.out.println(e.getLength());
+                Delete delete = new Delete(e.getOffset() + e.getLength(), e.getLength());
                 System.out.println(delete.retain);
                 if (status == 2) { //It is client
                     try {
                         ClientBuffer.buffer.put(delete);
                     } catch (InterruptedException error) {
+                        error.printStackTrace();
+                    }
+                }
+                if(status == 1){
+                    try{
+                        TextBuffer.buffer.put(new Text(editorPane.getText()));
+                    }catch (InterruptedException error) {
                         error.printStackTrace();
                     }
                 }

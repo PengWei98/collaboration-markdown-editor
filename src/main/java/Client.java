@@ -34,11 +34,14 @@ class ClientThread implements Runnable {
 
             try {
                 while (true) {
+
+                    //lock
                     Change change = ClientBuffer.buffer.take();
-//                    System.out.println("Consumer reads " + change.retain);
                     os = new ObjectOutputStream(server.getOutputStream());
                     os.writeObject(change);
                     os.flush();
+
+                    //unlock
                 }
             } catch (IOException ex) {
                 System.out.println("can not send!");
@@ -73,9 +76,6 @@ class UpdateText implements Runnable {
 
     public void run() {
         try {
-//            OutputStream os = server.getOutputStream();
-//
-//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 
             InputStream is = server.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -84,10 +84,14 @@ class UpdateText implements Runnable {
             while (true) {
                 // 开始接收服务端发送的数据
                 String text = br.readLine();
-                if(text != null) {
-                    System.out.println("客户端接收到:   " + text);
-                    System.out.println("I will update to:" + text);
-                    GUI.editorPane.setText(text);
+                if (text != null ) {
+//                    System.out.println("客户端接收到:   " + text);
+//                    System.out.println("I will update to:" + text);
+                    String text1 = GUI.editorPane.getText();
+                    System.out.println("原来的txt:" + text1 + " 要更新为的txt:" + text);
+                    if (!text1.equals(text)) {
+                        GUI.editorPane.setText(text);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -96,50 +100,7 @@ class UpdateText implements Runnable {
     }
 }
 
-//class UpdateClientText implements Runnable {
-//
-//    Socket server;
-//
-//    public UpdateClientText(Socket server) {
-//        this.server = server;
-//    }
-//
-//    public void run() {
-//        ObjectInputStream is = null;
-//
-//        try {
-//
-//            while (true) {
-//                System.out.println("hello!");
-////                is = new ObjectInputStream(new BufferedInputStream(server.getInputStream()));
-////                Text text = (Text) is.readObject();
-////                if (text != null) {
-////                    System.out.println("The text is:" + text.text);
-////                    GUI.editorPane.setText(text.text);
-////                }
-//
-//                InputStream in = server.getInputStream();
-//                if (in.available() > 0 ){
-//                    is = new ObjectInputStream(new BufferedInputStream(server.getInputStream()));
-//                    System.out.println("hello2!");
-//
-//                    System.out.println("hello3!");
-//                    Text text = (Text) is.readObject();
-//                    System.out.println("hello!4");
-//                    if (text != null) {
-//                        System.out.println("hello5!");
-//                        System.out.println(text.text);
-//                        GUI.editorPane.setText(text.text);
-//                    }
-//                }
-//
-//            }
-//        } catch (Exception ex) {
-//            ex.getStackTrace();
-//        }
-//    }
-//}
-//
+
 
 
 

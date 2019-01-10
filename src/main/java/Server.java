@@ -51,9 +51,8 @@ class ServerThread implements Runnable {
 
     public void run() {
         ObjectInputStream is = null;
-        ObjectOutputStream os = null;
-        try {
-            while (true) {
+        while (true) {
+            try {
                 InputStream in = client.getInputStream();
                 if (in.available() > 0) {
                     is = new ObjectInputStream(new BufferedInputStream(in));
@@ -66,12 +65,11 @@ class ServerThread implements Runnable {
                     }
                     System.out.println("Server read:" + change.retain);
                 }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (ClassNotFoundException ex) {
+                ex.getException();
             }
-        }
-        catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.getException();
         }
 //        finally {
 //            try {
@@ -114,12 +112,15 @@ class SendText implements Runnable {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 //            String lastText = "";
             while (true) {
+                TextBuffer.buffer.take();
                 String text = GUI.editorPane.getText();
-                System.out.println("I will send" + text);
-                writer.write(text);
-                writer.newLine();
-                writer.flush();
-                Thread.sleep(1000);
+                if(!text.equals("")) {
+                    System.out.println("I will send:" + text);
+                    writer.write(text);
+                    writer.newLine();
+                    writer.flush();
+//                Thread.sleep(1000);
+                }
             }
 
         } catch (Exception ex) {
