@@ -18,6 +18,7 @@ public class Server {
         new Thread(new WaitForConnect()).start();
         new Thread(new UpdateServerText()).start();
 
+
     }
 }
 
@@ -32,6 +33,7 @@ class WaitForConnect implements Runnable {
                 System.out.println("与客户端连接成功！");
                 //为每个客户端连接开启一个线程
                 new Thread(new ServerThread(client)).start();
+                new Thread(new SendText(client)).start();
             }
         } catch (Exception ex) {
             System.out.println("fail to connect!");
@@ -49,12 +51,14 @@ class ServerThread implements Runnable {
 
     public void run() {
         ObjectInputStream is = null;
+        ObjectOutputStream os = null;
         try {
 //            new Thread(new PassText(client)).start();
             while (true) {
                 InputStream in = client.getInputStream();
                 if (in.available() > 0) {
                     is = new ObjectInputStream(new BufferedInputStream(in));
+
 
                     Object obj = is.readObject();
                     Change change = (Change) obj;
@@ -93,25 +97,53 @@ class UpdateServerText implements Runnable {
     }
 }
 
-class PassText implements Runnable {
+//class PassText implements Runnable {
+//
+//    private Socket client = null;
+//
+//    public PassText(Socket client) {
+//        this.client = client;
+//    }
+//
+//    public void run() {
+//        try {
+//            ObjectOutputStream os = null;
+//            while(true) {
+//                os = new ObjectOutputStream(client.getOutputStream());
+//                os.writeObject(new Text(GUI.editorPane.getText()));
+//                os.flush();
+//            }
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
+//
+//}
 
-    private Socket client = null;
+class SendText implements Runnable {
 
-    public PassText(Socket client) {
+    private Socket client;
+
+    public SendText(Socket client) {
         this.client = client;
     }
 
+
     public void run() {
         try {
-            ObjectOutputStream os = null;
-            while(true) {
-                os = new ObjectOutputStream(client.getOutputStream());
-                os.writeObject(new Text(GUI.editorPane.getText()));
-                os.flush();
+//            //获得输出流
+            OutputStream os = client.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
+            while(true){
+
+                String str  = GUI.editorPane.getText();
+                writer.write(str);
+                writer.newLine();
+                writer.flush();
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+
+        } catch (Exception ex) {
+            ex.getStackTrace();
         }
     }
-
 }

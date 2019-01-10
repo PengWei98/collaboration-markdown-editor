@@ -16,11 +16,13 @@ import javax.swing.text.BadLocationException;
 
 
 public class GUI {
-//    static String text = "";
+    //    static String text = "";
     static JEditorPane editorPane = new JEditorPane();
     static JScrollPane scrollPane = new JScrollPane(editorPane);
     static JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     static int status = 0;
+    static boolean lock = false;
+    static boolean hasJumped = false;
 
 //    public static void setText(String text){
 //        editorPane.setText(text);
@@ -47,7 +49,7 @@ public class GUI {
         menu1.add(menuItem1);
         menuItem1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(status != 0){
+                if (status != 0) {
                     System.out.println("this GUI is not idle!");
                     return;
                 }
@@ -66,7 +68,7 @@ public class GUI {
         menu1.add(menuItem2);
         menuItem2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(status != 0){
+                if (status != 0) {
                     System.out.println("this GUI is not idle!");
                 }
                 try {
@@ -86,25 +88,20 @@ public class GUI {
 
         editorPane.getDocument().addDocumentListener(new DocumentListener() { //Producer
             public void insertUpdate(DocumentEvent e) {
+                System.out.println("insert");
                 try {
                     Insert insert = new Insert(e.getOffset(), e.getDocument().getText(e.getOffset(), e.getLength()));
                     System.out.println(insert.retain);
                     System.out.println(insert.insert);
-                    if(status == 2){ //It is client
+                    if (status == 2) { //It is client
                         try {
                             ClientBuffer.buffer.put(insert);
-                        }
-                        catch (InterruptedException error) {
+                        } catch (InterruptedException error) {
                             error.printStackTrace();
                         }
                     }
-                    if(status == 1){//It is a server
-                        try{
-                            TextBuffer.buffer.put(new Text(editorPane.getText()));
-                        }
-                        catch (InterruptedException error) {
-                            error.printStackTrace();
-                        }
+                    if(status == 1){
+
                     }
                 } catch (BadLocationException error) {
                     error.printStackTrace();
@@ -112,27 +109,20 @@ public class GUI {
             }
 
             public void removeUpdate(DocumentEvent e) {
+                System.out.println("remove");
                 Delete delete = new Delete(e.getOffset() + 1);
                 System.out.println(delete.retain);
-                if(status == 2){ //It is client
+                if (status == 2) { //It is client
                     try {
                         ClientBuffer.buffer.put(delete);
-                    }
-                    catch (InterruptedException error) {
-                        error.printStackTrace();
-                    }
-                }
-                if(status == 1){//It is a server
-                    try{
-                        TextBuffer.buffer.put(new Text(editorPane.getText()));
-                    }
-                    catch (InterruptedException error) {
+                    } catch (InterruptedException error) {
                         error.printStackTrace();
                     }
                 }
             }
 
             public void changedUpdate(DocumentEvent e) {
+                System.out.println("change");
             }
         });
 

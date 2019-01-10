@@ -9,5 +9,5 @@ public class Text implements java.io.Serializable{
 
 class TextBuffer{
     static ArrayBlockingQueue<Text> buffer =
-            new ArrayBlockingQueue(100);
+            new ArrayBlockingQueue(200);
 }
