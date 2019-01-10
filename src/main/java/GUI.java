@@ -21,7 +21,7 @@ public class GUI {
     static JScrollPane scrollPane = new JScrollPane(editorPane);
     static JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     static int status = 0;
-    static boolean lock = false;
+    static boolean update = false;
     static boolean hasJumped = false;
 
 //    public static void setText(String text){
@@ -100,9 +100,10 @@ public class GUI {
                             error.printStackTrace();
                         }
                     }
-                    if(status == 1){
-
-                    }
+//                    if(status == 1){
+//                        update = true;
+//                        System.out.println("You can update");
+//                    }
                 } catch (BadLocationException error) {
                     error.printStackTrace();
                 }

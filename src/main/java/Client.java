@@ -31,11 +31,8 @@ class ClientThread implements Runnable {
         try {
             new Thread(new UpdateText(server)).start();
             ObjectOutputStream os = null;
-//            ObjectInputStream is = null;
 
             try {
-
-//                new Thread(new UpdateClientText(server)).start();
                 while (true) {
                     Change change = ClientBuffer.buffer.take();
 //                    System.out.println("Consumer reads " + change.retain);
@@ -76,9 +73,9 @@ class UpdateText implements Runnable {
 
     public void run() {
         try {
-            OutputStream os = server.getOutputStream();
-
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
+//            OutputStream os = server.getOutputStream();
+//
+//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 
             InputStream is = server.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -87,9 +84,11 @@ class UpdateText implements Runnable {
             while (true) {
                 // 开始接收服务端发送的数据
                 String text = br.readLine();
-                System.out.println("客户端接收到:   " + text);
-//                GUI.editorPane.setText(string2);
-
+                if(text != null) {
+                    System.out.println("客户端接收到:   " + text);
+                    System.out.println("I will update to:" + text);
+                    GUI.editorPane.setText(text);
+                }
             }
         } catch (Exception ex) {
             ex.getStackTrace();

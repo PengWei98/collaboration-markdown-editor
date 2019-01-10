@@ -31,7 +31,10 @@ public class OperationalTransformation {
 
     static String textTransformation(String text) {
         text = transformation(text);
+        System.out.println("---------------");
+        System.out.println("Set text:" + text);
         GUI.editorPane.setText(text);
+        System.out.println("---------------");
         return text;
 
     }

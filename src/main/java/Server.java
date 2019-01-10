@@ -53,13 +53,10 @@ class ServerThread implements Runnable {
         ObjectInputStream is = null;
         ObjectOutputStream os = null;
         try {
-//            new Thread(new PassText(client)).start();
             while (true) {
                 InputStream in = client.getInputStream();
                 if (in.available() > 0) {
                     is = new ObjectInputStream(new BufferedInputStream(in));
-
-
                     Object obj = is.readObject();
                     Change change = (Change) obj;
                     try {
@@ -70,20 +67,23 @@ class ServerThread implements Runnable {
                     System.out.println("Server read:" + change.retain);
                 }
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             ex.printStackTrace();
         } catch (ClassNotFoundException ex) {
-
-        } finally {
-            try {
-                is.close();
-            } catch (Exception ex) {
-            }
-            try {
-                client.close();
-            } catch (Exception ex) {
-            }
+            ex.getException();
         }
+//        finally {
+//            try {
+//                is.close();
+//            } catch (Exception ex) {
+//                ex.getStackTrace();
+//            }
+//            try {
+//                client.close();
+//            } catch (Exception ex) {
+//            }
+//        }
     }
 }
 
@@ -97,28 +97,6 @@ class UpdateServerText implements Runnable {
     }
 }
 
-//class PassText implements Runnable {
-//
-//    private Socket client = null;
-//
-//    public PassText(Socket client) {
-//        this.client = client;
-//    }
-//
-//    public void run() {
-//        try {
-//            ObjectOutputStream os = null;
-//            while(true) {
-//                os = new ObjectOutputStream(client.getOutputStream());
-//                os.writeObject(new Text(GUI.editorPane.getText()));
-//                os.flush();
-//            }
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-//
-//}
 
 class SendText implements Runnable {
 
@@ -134,12 +112,14 @@ class SendText implements Runnable {
 //            //获得输出流
             OutputStream os = client.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
-            while(true){
-
-                String str  = GUI.editorPane.getText();
-                writer.write(str);
+//            String lastText = "";
+            while (true) {
+                String text = GUI.editorPane.getText();
+                System.out.println("I will send" + text);
+                writer.write(text);
                 writer.newLine();
                 writer.flush();
+                Thread.sleep(1000);
             }
 
         } catch (Exception ex) {
