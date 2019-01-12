@@ -10,19 +10,14 @@ public class OperationalTransformation {
             String text = GUI.editorPane.getText();
             if (change.getClass() == Insert.class) {
                 Insert insert = (Insert) change;
-                System.out.println("retain:" + insert.retain);
-                System.out.println("insert:" + insert.insert);
-//                System.out.println("Text:" + text);
-
+//                System.out.println("retain:" + insert.retain);
+//                System.out.println("insert:" + insert.insert);
 
                 text = text.substring(0, insert.retain) + insert.insert + text.substring(insert.retain);
                 return text;
             } else {
                 if (change.getClass() == Delete.class) {
                     Delete delete = (Delete) change;
-//                        if ((delete.retain - 1 < 0) || delete.retain > text.length()) {
-//                            System.out.println("error!!!!!!!!!!");
-//                        } else {
                         text = text.substring(0, delete.retain - delete.length) + text.substring(delete.retain);
                         return text;
 //                    }
@@ -38,11 +33,8 @@ public class OperationalTransformation {
 
     static String textTransformation() {
         String text = transformation();
-        System.out.println("---------------");
 
-        System.out.println("Set text:" + text);
         GUI.editorPane.setText(text);
-        System.out.println("---------------");
         return text;
 
     }

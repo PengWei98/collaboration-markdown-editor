@@ -5,7 +5,7 @@ import java.net.Socket;
 
 
 public class Server {
-    static void openServer() throws Exception {
+    static void openServer() {
         new Thread(new WaitForConnect()).start();
         new Thread(new UpdateServerText()).start();
 
@@ -79,7 +79,6 @@ class ServerThread implements Runnable {
 class UpdateServerText implements Runnable {
 
     public void run() {
-//        String text = GUI.editorPane.getText();
         while (true) {
             OperationalTransformation.textTransformation();
         }
@@ -101,7 +100,6 @@ class SendText implements Runnable {
 //            //获得输出流
             OutputStream os = client.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
-//            String lastText = "";
             while (true) {
                 TextBuffer.buffer.take();
                 String text = GUI.editorPane.getText();
@@ -110,7 +108,6 @@ class SendText implements Runnable {
                     writer.write(text);
                     writer.newLine();
                     writer.flush();
-//                Thread.sleep(1000);
                 }
             }
 

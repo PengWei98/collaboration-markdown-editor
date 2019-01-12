@@ -29,18 +29,11 @@ class MyEditorPane extends JEditorPane {
 }
 
 public class GUI {
-    //    static String text = "";
     static MyEditorPane editorPane = new MyEditorPane();
     static JScrollPane scrollPane = new JScrollPane(editorPane);
     static JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    static JTextPane textPane = new JTextPane();
     static int status = 0;
-    static boolean update = false;
-    static boolean hasJumped = false;
-
-//    public static void setText(String text){
-//        editorPane.setText(text);
-//        System.out.println(editorPane.getText());
-//    }
 
     public static void showGUI() {
         //create the frame
@@ -52,6 +45,7 @@ public class GUI {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         JButton button = new JButton("Left");
+
 
         JMenuBar menuBar = new JMenuBar();
         frame.setJMenuBar(menuBar);
@@ -93,7 +87,7 @@ public class GUI {
             }
         });
 
-        splitPane.setLeftComponent(button);
+        splitPane.setLeftComponent(textPane);
         splitPane.setRightComponent(scrollPane);
 
         frame.add(splitPane);
@@ -103,6 +97,7 @@ public class GUI {
             public void insertUpdate(DocumentEvent e) {
 //                System.out.println("insert");
                 try {
+                    new Thread(new Title()).start();
                     Insert insert = new Insert(e.getOffset(), e.getDocument().getText(e.getOffset(), e.getLength()));
                     System.out.println(insert.retain);
                     System.out.println(insert.insert);
@@ -130,8 +125,7 @@ public class GUI {
             }
 
             public void removeUpdate(DocumentEvent e) {
-                System.out.println("remove");
-//                System.out.println(e.getLength());
+                new Thread(new Title()).start();
                 Delete delete = new Delete(e.getOffset() + e.getLength(), e.getLength());
                 System.out.println(delete.retain);
                 if (status == 2) { //It is client
