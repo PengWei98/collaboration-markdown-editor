@@ -6,15 +6,6 @@ import java.net.Socket;
 
 public class Server {
     static void openServer() throws Exception {
-//        ServerSocket server = new ServerSocket(4618);
-//        Socket client = null;
-//        while (true) {
-//            //等待客户端的连接，如果没有获取连接
-//            client = server.accept();
-//            System.out.println("与客户端连接成功！");
-//            //为每个客户端连接开启一个线程
-//            new Thread(new ServerThread(client)).start();
-//        }
         new Thread(new WaitForConnect()).start();
         new Thread(new UpdateServerText()).start();
 
@@ -90,7 +81,7 @@ class UpdateServerText implements Runnable {
     public void run() {
 //        String text = GUI.editorPane.getText();
         while (true) {
-            OperationalTransformation.textTransformation(GUI.editorPane.getText());
+            OperationalTransformation.textTransformation();
         }
     }
 }
@@ -114,7 +105,7 @@ class SendText implements Runnable {
             while (true) {
                 TextBuffer.buffer.take();
                 String text = GUI.editorPane.getText();
-                if(!text.equals("")) {
+                if (!text.equals("")) {
                     System.out.println("I will send:" + text);
                     writer.write(text);
                     writer.newLine();

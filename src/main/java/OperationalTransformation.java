@@ -3,15 +3,17 @@ import java.io.IOException;
 public class OperationalTransformation {
 
 
-    static String transformation(String text) {
-
+    static String transformation() {
         try {
-            System.out.println("The text is " + text);
+//            System.out.println("The text is " + text);
             Change change = ServerBuffer.buffer.take();
+            String text = GUI.editorPane.getText();
             if (change.getClass() == Insert.class) {
                 Insert insert = (Insert) change;
                 System.out.println("retain:" + insert.retain);
-                System.out.println("insert " + insert.insert);
+                System.out.println("insert:" + insert.insert);
+//                System.out.println("Text:" + text);
+
 
                 text = text.substring(0, insert.retain) + insert.insert + text.substring(insert.retain);
                 return text;
@@ -34,8 +36,8 @@ public class OperationalTransformation {
         return "";
     }
 
-    static String textTransformation(String text) {
-        text = transformation(text);
+    static String textTransformation() {
+        String text = transformation();
         System.out.println("---------------");
 
         System.out.println("Set text:" + text);
