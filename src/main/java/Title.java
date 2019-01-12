@@ -13,13 +13,13 @@ public class Title implements Runnable{
                 for (i = 0; i < length - 1; i++) {
                     if (line.charAt(i) == '#') {
                         if (i != 0) {
-                            title.append(" ");
+                            title.append("  ");
                         }
                     } else {
                         break;
                     }
                 }
-                title.append(line.substring(i));
+                title.append(line.substring(i).trim());
             }
             if (!title.toString().equals("")) {
                 titles = titles + title.toString() + "\n";

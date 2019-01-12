@@ -35,13 +35,11 @@ class ClientThread implements Runnable {
             try {
                 while (true) {
 
-                    //lock
                     Change change = ClientBuffer.buffer.take();
+//                    System.out.println();
                     os = new ObjectOutputStream(server.getOutputStream());
                     os.writeObject(change);
                     os.flush();
-
-                    //unlock
                 }
             } catch (IOException ex) {
                 System.out.println("can not send!");
@@ -84,6 +82,7 @@ class UpdateText implements Runnable {
             while (true) {
                 // 开始接收服务端发送的数据
                 String text = br.readLine();
+                System.out.println(text);
                 if (text != null ) {
 //                    System.out.println("客户端接收到:   " + text);
 //                    System.out.println("I will update to:" + text);

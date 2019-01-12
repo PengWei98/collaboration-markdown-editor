@@ -1,4 +1,11 @@
 import com.sun.org.apache.xerces.internal.impl.xs.SchemaSymbols;
+import com.vladsch.flexmark.Extension;
+import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.parser.ParserEmulationProfile;
+import com.vladsch.flexmark.util.options.MutableDataSet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,6 +13,7 @@ import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -24,7 +32,6 @@ class MyEditorPane extends JEditorPane {
         lock1 = true;
         lock2 = true;
         super.setText(text);
-
     }
 }
 
@@ -34,6 +41,8 @@ public class GUI {
     static JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     static JTextPane textPane = new JTextPane();
     static int status = 0;
+    static boolean preview = false;
+    static String text = "";
 
     public static void showGUI() {
         //create the frame
@@ -87,6 +96,44 @@ public class GUI {
             }
         });
 
+        final JMenuItem menuItem3 = new JMenuItem("预览");
+        menu1.add(menuItem3);
+
+        final JMenuItem menuItem4 = new JMenuItem("取消预览");
+        menu1.add(menuItem4);
+        menuItem4.setEnabled(false);
+
+
+        menuItem3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                text = editorPane.getText();
+                editorPane.setContentType("text/html");
+                MutableDataSet options = new MutableDataSet();
+                options.setFrom(ParserEmulationProfile.MARKDOWN);
+                options.set(Parser.EXTENSIONS, Arrays.asList(new Extension[] { TablesExtension.create()}));
+                Parser parser = Parser.builder(options).build();
+                HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+                System.out.println(editorPane.getText());
+                Node document = parser.parse(text);
+                String html = renderer.render(document);
+                System.out.println(html);
+                editorPane.setText(html);
+                editorPane.setEditable(false);
+                menuItem3.setEnabled(false);
+                menuItem4.setEnabled(true);
+            }
+        });
+
+        menuItem4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                editorPane.setContentType("text/plain");
+                editorPane.setText(text);
+                menuItem4.setEnabled(false);
+                menuItem3.setEnabled(true);
+
+            }
+        });
+
         splitPane.setLeftComponent(textPane);
         splitPane.setRightComponent(scrollPane);
 
@@ -95,12 +142,15 @@ public class GUI {
 
         editorPane.getDocument().addDocumentListener(new DocumentListener() { //Producer
             public void insertUpdate(DocumentEvent e) {
-//                System.out.println("insert");
+                System.out.println("insert");
                 try {
                     new Thread(new Title()).start();
                     Insert insert = new Insert(e.getOffset(), e.getDocument().getText(e.getOffset(), e.getLength()));
-                    System.out.println(insert.retain);
-                    System.out.println(insert.insert);
+//                    System.out.println(e.getOffset());
+//                    System.out.println(e.getLength());
+
+//                    System.out.println(insert.retain);
+//                    System.out.println(insert.insert);
                     if (status == 2) { //It is client
                         if (editorPane.lock1) {
                             editorPane.lock1 = false;
@@ -127,7 +177,7 @@ public class GUI {
             public void removeUpdate(DocumentEvent e) {
                 new Thread(new Title()).start();
                 Delete delete = new Delete(e.getOffset() + e.getLength(), e.getLength());
-                System.out.println(delete.retain);
+                System.out.println("Delete" + delete.retain);
                 if (status == 2) { //It is client
                     if (editorPane.lock2) {
                         editorPane.lock2 = false;
@@ -157,5 +207,7 @@ public class GUI {
 
     public static void main(String[] a) {
         showGUI();
+        GUI.editorPane.setText("123\nvfb");
+        GUI.editorPane.setText("123\nvfb");
     }
 }

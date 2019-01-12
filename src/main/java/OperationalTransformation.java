@@ -33,9 +33,8 @@ public class OperationalTransformation {
 
     static String textTransformation() {
         String text = transformation();
-
+        System.out.println("服务器更新为：" + text);
         GUI.editorPane.setText(text);
         return text;
-
     }
 }
