@@ -1,5 +1,6 @@
 import com.sun.org.apache.xerces.internal.impl.xs.SchemaSymbols;
 
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -14,6 +15,7 @@ public class Client {
         Socket server = null;
         server = new Socket(IP, 4618);
         System.out.println("与服务器连接成功！");
+        JOptionPane.showMessageDialog(null, "参与成功！", "提示", JOptionPane.INFORMATION_MESSAGE);
         //为接受服务器消息令开启一线程
         new Thread(new ClientThread(server)).start();
     }

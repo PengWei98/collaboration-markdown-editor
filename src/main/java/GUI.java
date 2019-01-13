@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JButton;
@@ -63,12 +64,12 @@ public class GUI {
         JMenu menu1 = new JMenu("功能");
 
         menuBar.add(menu1);
-        JMenuItem menuItem1 = new JMenuItem("开启线程");
+        JMenuItem menuItem1 = new JMenuItem("邀请协同编辑");
         menu1.add(menuItem1);
         menuItem1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (status != 0) {
-                    System.out.println("this GUI is not idle!");
+                    JOptionPane.showMessageDialog(null, "提示：您目前已经参与到协同编辑中，请勿重复", "提示", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 try {
@@ -77,20 +78,28 @@ public class GUI {
                 } catch (Exception error) {
                     System.out.println("The port has been used!");
                 }
+                try {
+                    InetAddress addr = InetAddress.getLocalHost();
+                    String ip = addr.getHostAddress();
+                    JOptionPane.showMessageDialog(null, "参与者输入'" + ip + "'后即可参与协同编辑", "邀请协同编辑", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    System.out.println("network error!");
 
-                JOptionPane.showMessageDialog(null, "在对话框内显示的描述性的文字", "标题条文字串", JOptionPane.INFORMATION_MESSAGE);
+
+                }
             }
         });
 
-        JMenuItem menuItem2 = new JMenuItem("连接服务器");
+        JMenuItem menuItem2 = new JMenuItem("参与协同编辑");
         menu1.add(menuItem2);
         menuItem2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (status != 0) {
-                    System.out.println("this GUI is not idle!");
+                    JOptionPane.showMessageDialog(null, "提示：您目前已经参与到协同编辑中，请勿重复", "提示", JOptionPane.WARNING_MESSAGE);
                 }
                 try {
-                    Client.openClient("127.0.0.1");
+                    String ip = JOptionPane.showInputDialog( null, "请输入邀请码：", "参与协同编辑", JOptionPane.QUESTION_MESSAGE );
+                    Client.openClient(ip);
                     status = 2;
                 } catch (Exception error) {
                     System.out.println("Can not connect!");
@@ -260,8 +269,6 @@ public class GUI {
                     System.out.println(editorPane.getText());
                     Node document = parser.parse(text);
                     String html = renderer.render(document);
-
-
 
 
                     byte[] sourceByte = html.getBytes();

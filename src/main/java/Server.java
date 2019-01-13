@@ -1,4 +1,5 @@
 
+import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,6 +23,7 @@ class WaitForConnect implements Runnable {
                 //等待客户端的连接，如果没有获取连接
                 client = server.accept();
                 System.out.println("与客户端连接成功！");
+                JOptionPane.showMessageDialog(null, "有一名参与者进入了协同编辑", "提示", JOptionPane.INFORMATION_MESSAGE);
                 //为每个客户端连接开启一个线程
                 new Thread(new ServerThread(client)).start();
                 new Thread(new SendText(client)).start();
