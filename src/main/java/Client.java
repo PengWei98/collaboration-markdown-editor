@@ -80,13 +80,22 @@ class UpdateText implements Runnable {
 
             //接收服务器的相应
             while (true) {
+                String text = "";
                 // 开始接收服务端发送的数据
-                String text = br.readLine();
-                System.out.println(text);
-                if (text != null ) {
-//                    System.out.println("客户端接收到:   " + text);
-//                    System.out.println("I will update to:" + text);
-                    String text1 = GUI.editorPane.getText();
+                text = br.readLine();
+                text = text.replace('~', '\n');
+                System.out.println("I read " + text);
+
+
+                String str = null;
+                boolean finishUpdate = true;
+                String text1 = "";
+
+                System.out.println("I recieved:" + text);
+                if (text != null) {
+
+                    text1 = GUI.editorPane.getText();
+
                     System.out.println("原来的txt:" + text1 + " 要更新为的txt:" + text);
                     if (!text1.equals(text)) {
                         GUI.editorPane.setText(text);

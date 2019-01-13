@@ -105,12 +105,12 @@ class SendText implements Runnable {
                 String text = GUI.editorPane.getText();
                 if (!text.equals("")) {
                     System.out.println("I will send:" + text);
-                    writer.write(text);
+                    writer.write(text.replace('\n','~'));
+//                    writer.write("hello\r\n\r\n");
                     writer.newLine();
                     writer.flush();
                 }
             }
-
         } catch (Exception ex) {
             ex.getStackTrace();
         }

@@ -207,7 +207,5 @@ public class GUI {
 
     public static void main(String[] a) {
         showGUI();
-        GUI.editorPane.setText("123\nvfb");
-        GUI.editorPane.setText("123\nvfb");
     }
 }
