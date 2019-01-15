@@ -44,6 +44,8 @@ public class GUI {
     static JScrollPane scrollPane = new JScrollPane(editorPane);
     static JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     static JTextPane textPane = new JTextPane();
+    static JSplitPane splitPane2 = new JSplitPane();
+    static JEditorPane editorPane2 = new JEditorPane();
     static int status = 0;
     static String text = "";
 
@@ -52,11 +54,10 @@ public class GUI {
         JFrame frame = new JFrame("Markdown Editor");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setSize(800, 500);
+        frame.setSize(1000, 500);
         // Center the frame
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        JButton button = new JButton("Left");
 
 
         JMenuBar menuBar = new JMenuBar();
@@ -108,11 +109,11 @@ public class GUI {
         });
 
         final JMenuItem menuItem3 = new JMenuItem("预览");
-        menu1.add(menuItem3);
+//        menu1.add(menuItem3);
 
         final JMenuItem menuItem4 = new JMenuItem("取消预览");
-        menu1.add(menuItem4);
-        menuItem4.setEnabled(false);
+//        menu1.add(menuItem4);
+//        menuItem4.setEnabled(false);
 
         menuItem3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -138,6 +139,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 editorPane.setContentType("text/plain");
                 editorPane.setText(text);
+                editorPane.setEditable(true);
                 menuItem4.setEnabled(false);
                 menuItem3.setEnabled(true);
 
@@ -295,21 +297,23 @@ public class GUI {
         splitPane.setLeftComponent(textPane);
         splitPane.setRightComponent(scrollPane);
         splitPane.setDividerLocation(150);
-
-        frame.add(splitPane);
+        splitPane2.setLeftComponent(splitPane);
+        splitPane2.setRightComponent(editorPane2);
+        splitPane2.setDividerLocation(600);
+        editorPane2.setEditable(false);
+//        editorPane2.setE
+        editorPane2.setContentType("text/html");
+//        frame.add(splitPane);
+        frame.add(splitPane2);
         frame.setVisible(true);
 
         editorPane.getDocument().addDocumentListener(new DocumentListener() { //Producer
             public void insertUpdate(DocumentEvent e) {
-                System.out.println("insert");
                 try {
                     new Thread(new Title()).start();
+                    new Thread(new Preview()).start();
                     Insert insert = new Insert(e.getOffset(), e.getDocument().getText(e.getOffset(), e.getLength()));
-//                    System.out.println(e.getOffset());
-//                    System.out.println(e.getLength());
 
-//                    System.out.println(insert.retain);
-//                    System.out.println(insert.insert);
                     if (status == 2) { //It is client
                         if (editorPane.lock1) {
                             editorPane.lock1 = false;
@@ -335,6 +339,7 @@ public class GUI {
 
             public void removeUpdate(DocumentEvent e) {
                 new Thread(new Title()).start();
+                new Thread(new Preview()).start();
                 Delete delete = new Delete(e.getOffset() + e.getLength(), e.getLength());
                 System.out.println("Delete" + delete.retain);
                 if (status == 2) { //It is client

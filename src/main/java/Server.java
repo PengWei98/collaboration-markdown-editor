@@ -64,17 +64,6 @@ class ServerThread implements Runnable {
                 ex.getException();
             }
         }
-//        finally {
-//            try {
-//                is.close();
-//            } catch (Exception ex) {
-//                ex.getStackTrace();
-//            }
-//            try {
-//                client.close();
-//            } catch (Exception ex) {
-//            }
-//        }
     }
 }
 
